@@ -22,7 +22,7 @@ module.exports = function (app) {
         return res.json({error: 'Invalid coordinate'});
       }
 
-      const isValidValue = /[0-9]/.test(value);
+      const isValidValue = /[1-9]/.test(value);
 
       if (false === isValidValue) {
         return res.json({error: 'Invalid value'});
