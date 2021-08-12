@@ -6,7 +6,7 @@ class SudokuSolver {
       throw new Error('Required field missing');
     }
 
-    if (false === /[1-9.]*/.test(puzzleString)) {
+    if (false === /^[1-9.]*$/.test(puzzleString)) {
       throw new Error('Invalid characters in puzzle');
     }
 

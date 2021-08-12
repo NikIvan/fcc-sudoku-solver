@@ -10,6 +10,14 @@ module.exports = function (app) {
     .post((req, res) => {
       const {puzzle, coordinate, value} = req.body;
 
+      if (
+        (puzzle == null)
+        || (coordinate == null)
+        || (value == null)
+      ) {
+        return res.json({error: 'Required field(s) missing'});
+      }
+
       try {
         solver.validate(puzzle);
       } catch (err) {
