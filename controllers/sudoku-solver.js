@@ -1,4 +1,7 @@
 const ROW_LENGTH = 9;
+const MIN_VALUE = 1;
+const MAX_VALUE = 9;
+const PUZZLE_STRING_LENGTH = 81;
 
 class SudokuSolver {
   validate(puzzleString) {
@@ -10,14 +13,12 @@ class SudokuSolver {
       throw new Error('Invalid characters in puzzle');
     }
 
-    if (puzzleString.length !== 81) {
+    if (puzzleString.length !== PUZZLE_STRING_LENGTH) {
       throw new Error('Expected puzzle to be 81 characters long');
     }
   }
 
-  checkRowPlacement(puzzleString, row, column, value) {
-    const rowNum = this.rowToNumber(row);
-    const columnNum = this.colToNumber(column);
+  checkRowPlacement(puzzleString, rowNum, columnNum, value) {
     const valueNum = +value;
     const startIndex = rowNum * ROW_LENGTH;
 
@@ -35,9 +36,7 @@ class SudokuSolver {
     return (false === valuesSet.has(valueNum));
   }
 
-  checkColPlacement(puzzleString, row, column, value) {
-    const rowNum = this.rowToNumber(row);
-    const columnNum = this.colToNumber(column);
+  checkColPlacement(puzzleString, rowNum, columnNum, value) {
     const valueNum = +value;
     let valuesString = '';
 
@@ -57,9 +56,7 @@ class SudokuSolver {
     return (false === valuesSet.has(valueNum));
   }
 
-  checkRegionPlacement(puzzleString, row, column, value) {
-    const rowNum = this.rowToNumber(row);
-    const columnNum = this.colToNumber(column);
+  checkRegionPlacement(puzzleString, rowNum, columnNum, value) {
     const valueNum = +value;
 
     const firstColInRegion = Math.floor(columnNum / 3) * 3;
@@ -87,58 +84,46 @@ class SudokuSolver {
   }
 
   solve(puzzleStringInput) {
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-    const cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
     let puzzleString = puzzleStringInput;
 
     while(puzzleString.includes('.')) {
-      const variants = {};
       let newPuzzleString = '';
 
-      for (let i = 0; i < rows.length; i++) {
-        let currentSolution = null;
+      for (let i = 0; i < PUZZLE_STRING_LENGTH; i++) {
+        const variants = new Array(PUZZLE_STRING_LENGTH).fill([]);
+        const {row, col} = this.getCellCoords(i);
 
-        const row = rows[i];
+        const currentChar = puzzleString.charAt(i);
 
-        for (let j = 0; j < cols.length; j++) {
-          const col = cols[j];
-
-          for (let k = 0; k < values.length; k++) {
-            const value = values[k];
-
-            const isValidRow = this.checkRowPlacement(puzzleString, row, col, value);
-
-            if (false === isValidRow) {
-              continue;
-            }
-
-            const isValidCol = this.checkColPlacement(puzzleString, row, col, value);
-
-            if (false === isValidCol) {
-              continue;
-            }
-
-            const isValidRegion = this.checkRegionPlacement(puzzleString, row, col, value);
-
-            if (false === isValidRegion) {
-              continue;
-            }
-
-            let cellKey = `${row}${col}`;
-
-            if (variants[cellKey] == null) {
-              variants[cellKey] = [];
-            }
-
-            variants[cellKey].push(value);
-          }
+        if (currentChar !== '.') {
+          newPuzzleString += currentChar;
+          continue;
         }
-      }
 
-      for (const key in variants) {
-        if (variants[key].length === 1) {
-          newPuzzleString += variants[key];
+        for (let value = MIN_VALUE; value <= MAX_VALUE; value++) {
+          const isValidRow = this.checkRowPlacement(puzzleString, row, col, value);
+
+          if (false === isValidRow) {
+            continue;
+          }
+
+          const isValidCol = this.checkColPlacement(puzzleString, row, col, value);
+
+          if (false === isValidCol) {
+            continue;
+          }
+
+          const isValidRegion = this.checkRegionPlacement(puzzleString, row, col, value);
+
+          if (false === isValidRegion) {
+            continue;
+          }
+
+          variants[i].push(`${value}`);
+        }
+
+        if (variants[i].length === 1) {
+          newPuzzleString += variants[i][0];
           continue;
         }
 
@@ -161,6 +146,13 @@ class SudokuSolver {
 
   colToNumber(column) {
     return +column - 1;
+  }
+
+  getCellCoords(index) {
+    const row = Math.floor(index / ROW_LENGTH);
+    const col = (index % ROW_LENGTH);
+
+    return {row, col};
   }
 
   valuesStringToMap(valuesString) {

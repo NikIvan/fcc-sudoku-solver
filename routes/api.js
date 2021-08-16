@@ -40,9 +40,12 @@ module.exports = function (app) {
 
       const conflict = [];
 
-      const isValidRow = solver.checkRowPlacement(puzzle, row, column, value);
-      const isValidCol = solver.checkColPlacement(puzzle, row, column, value);
-      const isValidRegion = solver.checkRegionPlacement(puzzle, row, column, value);
+      const rowNum = solver.rowToNumber(row);
+      const colNum = solver.colToNumber(column);
+
+      const isValidRow = solver.checkRowPlacement(puzzle, rowNum, colNum, value);
+      const isValidCol = solver.checkColPlacement(puzzle, rowNum, colNum, value);
+      const isValidRegion = solver.checkRegionPlacement(puzzle, rowNum, colNum, value);
 
       if (false === isValidRow) conflict.push('row');
       if (false === isValidCol) conflict.push('column');

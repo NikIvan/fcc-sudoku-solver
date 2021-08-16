@@ -17,8 +17,8 @@ suite('UnitTests', () => {
     '82..4..6...16..89...98315.749.157.............53..4...96.415..81..7632..3...28.51',
   ];
   const invalidPuzzleStrings = [
-    '....................................................9.47...8..1..16....926914.37.',
-    '....................................................9.47...8..1..16....926914....',
+    '...........................................................8..1..16....926914.37.',
+    '123123...........................................................16....926914....',
     '123.................................................9.47...8..1..16....926914....',
   ];
 
@@ -35,28 +35,28 @@ suite('UnitTests', () => {
   });
 
   test('Logic handles a valid row placement', () => {
-    assert.strictEqual(solver.checkRowPlacement(validPuzzle, 'A', '2', '3'), true);
+    assert.strictEqual(solver.checkRowPlacement(validPuzzle, 0, 1, '3'), true);
   });
 
   test('Logic handles an invalid row placement', () => {
-    assert.strictEqual(solver.checkRowPlacement(validPuzzle, 'A', '2', '1'), false);
+    assert.strictEqual(solver.checkRowPlacement(validPuzzle, 0, 1, '1'), false);
   });
 
   test('Logic handles a valid column placement', () => {
-    assert.strictEqual(solver.checkColPlacement(validPuzzle, 'A', '2', '3'), true);
+    assert.strictEqual(solver.checkColPlacement(validPuzzle, 0, 1, '3'), true);
   });
 
   test('Logic handles an invalid column placement', () => {
-    assert.strictEqual(solver.checkColPlacement(validPuzzle, 'A', '2', '2'), false);
+    assert.strictEqual(solver.checkColPlacement(validPuzzle, 0, 1, '2'), false);
 
   });
 
   test('Logic handles a valid region (3x3 grid) placement', () => {
-    assert.strictEqual(solver.checkRegionPlacement(validPuzzle, 'A', '2', '3'), true);
+    assert.strictEqual(solver.checkRegionPlacement(validPuzzle, 0, 1, '3'), true);
   });
 
   test('Logic handles an invalid region (3x3 grid) placement', () => {
-    assert.strictEqual(solver.checkRegionPlacement(validPuzzle, 'A', '2', '6'), false);
+    assert.strictEqual(solver.checkRegionPlacement(validPuzzle, 0, 1, '6'), false);
   });
 
   test('Valid puzzle strings pass the solver', () => {
