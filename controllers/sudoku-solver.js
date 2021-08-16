@@ -3,20 +3,47 @@ const MIN_VALUE = 1;
 const MAX_VALUE = 9;
 const PUZZLE_STRING_LENGTH = 81;
 
+const ERROR_FIELD_MISSING = 'Required field missing';
+const ERROR_INVALID_CHARS = 'Invalid characters in puzzle';
+const ERROR_INVALID_LENGTH = 'Expected puzzle to be 81 characters long';
+const ERROR_CANNOT_BE_SOLVED = 'Puzzle cannot be solved';
+
 class SudokuSolver {
   validate(puzzleString) {
     if (puzzleString == null) {
-      throw new Error('Required field missing');
+      throw new Error(ERROR_FIELD_MISSING);
     }
 
     if (false === /^[1-9.]*$/.test(puzzleString)) {
-      throw new Error('Invalid characters in puzzle');
+      throw new Error(ERROR_INVALID_CHARS);
     }
 
     if (puzzleString.length !== PUZZLE_STRING_LENGTH) {
-      throw new Error('Expected puzzle to be 81 characters long');
+      throw new Error(ERROR_INVALID_LENGTH);
+    }
+
+    for (let i = 0; i < PUZZLE_STRING_LENGTH; i++) {
+      const value = puzzleString.charAt(i);
+
+      if (value === '.') {
+        continue;
+      }
+
+
+      const {row, col} = this.getCellCoords(i);
+
+      const isRowValid = this.checkRowPlacement(puzzleString, row, col, value);
+      const isColValid = this.checkColPlacement(puzzleString, row, col, value);
+      const isRegionValid = this.checkRegionPlacement(puzzleString, row, col, value);
+
+      // console.dir({value, row, col, isRowValid, isColValid, isRegionValid});
+
+      if (false === (isRowValid && isColValid && isRegionValid)) {
+        throw new Error(ERROR_CANNOT_BE_SOLVED);
+      }
     }
   }
+
 
   checkRowPlacement(puzzleString, rowNum, columnNum, value) {
     const valueNum = +value;
@@ -25,15 +52,22 @@ class SudokuSolver {
     const valuesString = puzzleString.slice(startIndex, startIndex + ROW_LENGTH);
 
     const valuesMap = this.valuesStringToMap(valuesString);
-    const valuesSet = this.valuesStringToSet(valuesString);
+    let valuesSet;
+
+    try {
+      valuesSet = this.valuesStringToSet(valuesString);
+    } catch (err) {
+      return false;
+    }
 
     const currentValue = valuesMap.get(columnNum);
 
     if (currentValue != null) {
-      return currentValue === valueNum;
+      return (currentValue === valueNum);
     }
 
     return (false === valuesSet.has(valueNum));
+
   }
 
   checkColPlacement(puzzleString, rowNum, columnNum, value) {
@@ -45,7 +79,13 @@ class SudokuSolver {
     }
 
     const valuesMap = this.valuesStringToMap(valuesString);
-    const valuesSet = this.valuesStringToSet(valuesString);
+    let valuesSet;
+
+    try {
+      valuesSet = this.valuesStringToSet(valuesString);
+    } catch (err) {
+      return false;
+    }
 
     const currentValue = valuesMap.get(rowNum);
 
@@ -71,7 +111,13 @@ class SudokuSolver {
     }
 
     const valuesMap = this.valuesStringToMap(valuesString);
-    const valuesSet = this.valuesStringToSet(valuesString);
+    let valuesSet;
+
+    try {
+      valuesSet = this.valuesStringToSet(valuesString);
+    } catch (err) {
+      return false;
+    }
 
     const indexInMap = (rowNum % 3) * 3 + (columnNum % 3);
     const currentValue = valuesMap.get(indexInMap);
@@ -131,7 +177,7 @@ class SudokuSolver {
       }
 
       if (newPuzzleString === puzzleString) {
-        throw new Error('Puzzle cannot be solved');
+        throw new Error(ERROR_CANNOT_BE_SOLVED);
       }
 
       puzzleString = newPuzzleString;
@@ -172,7 +218,13 @@ class SudokuSolver {
     return valuesString.split('')
       .filter((el) => el !== '.')
       .reduce((set, el) => {
-        set.add(+el);
+        const newEl = +el;
+
+        if (set.has(newEl)) {
+          throw new Error(ERROR_CANNOT_BE_SOLVED);
+        }
+
+        set.add(newEl);
         return set;
       }, new Set())
   }

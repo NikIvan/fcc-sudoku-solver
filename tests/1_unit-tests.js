@@ -19,7 +19,7 @@ suite('UnitTests', () => {
   const invalidPuzzleStrings = [
     '...........................................................8..1..16....926914.37.',
     '123123...........................................................16....926914....',
-    '123.................................................9.47...8..1..16....926914....',
+    '9.9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..',
   ];
 
   test('Logic handles a valid puzzle string of 81 characters', () => {
@@ -48,7 +48,6 @@ suite('UnitTests', () => {
 
   test('Logic handles an invalid column placement', () => {
     assert.strictEqual(solver.checkColPlacement(validPuzzle, 0, 1, '2'), false);
-
   });
 
   test('Logic handles a valid region (3x3 grid) placement', () => {
