@@ -36,8 +36,6 @@ class SudokuSolver {
       const isColValid = this.checkColPlacement(puzzleString, row, col, value);
       const isRegionValid = this.checkRegionPlacement(puzzleString, row, col, value);
 
-      // console.dir({value, row, col, isRowValid, isColValid, isRegionValid});
-
       if (false === (isRowValid && isColValid && isRegionValid)) {
         throw new Error(ERROR_CANNOT_BE_SOLVED);
       }
