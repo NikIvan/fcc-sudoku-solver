@@ -87,7 +87,7 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
-    return '';
+    throw new Error('Puzzle cannot be solved');
   }
 
   rowToNumber(row) {

@@ -24,13 +24,13 @@ module.exports = function (app) {
         return res.json({error: err.message});
       }
 
-      const isValidCoordinate = /[A-I][1-9]/.test(coordinate);
+      const isValidCoordinate = /^[A-I][1-9]$/.test(coordinate);
 
       if (false === isValidCoordinate) {
         return res.json({error: 'Invalid coordinate'});
       }
 
-      const isValidValue = /[1-9]/.test(value);
+      const isValidValue = /^[1-9]$/.test(value);
 
       if (false === isValidValue) {
         return res.json({error: 'Invalid value'});
