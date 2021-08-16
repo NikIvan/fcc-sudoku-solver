@@ -86,8 +86,73 @@ class SudokuSolver {
     return (false === valuesSet.has(valueNum));
   }
 
-  solve(puzzleString) {
-    throw new Error('Puzzle cannot be solved');
+  solve(puzzleStringInput) {
+    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+    const cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    let puzzleString = puzzleStringInput;
+
+    while(puzzleString.includes('.')) {
+      const variants = {};
+      let newPuzzleString = '';
+
+      for (let i = 0; i < rows.length; i++) {
+        let currentSolution = null;
+
+        const row = rows[i];
+
+        for (let j = 0; j < cols.length; j++) {
+          const col = cols[j];
+
+          for (let k = 0; k < values.length; k++) {
+            const value = values[k];
+
+            const isValidRow = this.checkRowPlacement(puzzleString, row, col, value);
+
+            if (false === isValidRow) {
+              continue;
+            }
+
+            const isValidCol = this.checkColPlacement(puzzleString, row, col, value);
+
+            if (false === isValidCol) {
+              continue;
+            }
+
+            const isValidRegion = this.checkRegionPlacement(puzzleString, row, col, value);
+
+            if (false === isValidRegion) {
+              continue;
+            }
+
+            let cellKey = `${row}${col}`;
+
+            if (variants[cellKey] == null) {
+              variants[cellKey] = [];
+            }
+
+            variants[cellKey].push(value);
+          }
+        }
+      }
+
+      for (const key in variants) {
+        if (variants[key].length === 1) {
+          newPuzzleString += variants[key];
+          continue;
+        }
+
+        newPuzzleString += '.';
+      }
+
+      if (newPuzzleString === puzzleString) {
+        throw new Error('Puzzle cannot be solved');
+      }
+
+      puzzleString = newPuzzleString;
+    }
+
+    return puzzleString;
   }
 
   rowToNumber(row) {
