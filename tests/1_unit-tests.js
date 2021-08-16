@@ -23,15 +23,37 @@ suite('UnitTests', () => {
   ];
 
   test('Logic handles a valid puzzle string of 81 characters', () => {
-    assert.doesNotThrow(() => solver.validate(validPuzzle));
+    try {
+      solver.validate(validPuzzle);
+    } catch (err) {
+      assert.fail('Error thrown');
+    }
+
+    assert.isOk('Passed');
   });
 
   test('Logic handles a puzzle string with invalid characters (not 1-9 or .)', () => {
-    assert.throws(() => solver.validate(invalidCharactersPuzzle));
+    try {
+      solver.validate(invalidCharactersPuzzle);
+      assert.fail('Does not throw error');
+    } catch (err) {
+      assert.strictEqual(typeof(err), 'object')
+      assert.property(err, 'message');
+    }
+
+    assert.isOk('Passed');
   });
 
   test('Logic handles a puzzle string that is not 81 characters in length', () => {
-    assert.throws(() => solver.validate(invalidLengthPuzzle));
+    try {
+      solver.validate(invalidLengthPuzzle);
+      assert.fail('Does not throw error');
+    } catch (err) {
+      assert.strictEqual(typeof(err), 'object')
+      assert.property(err, 'message');
+    }
+
+    assert.isOk('Passed');
   });
 
   test('Logic handles a valid row placement', () => {
@@ -60,13 +82,29 @@ suite('UnitTests', () => {
 
   test('Valid puzzle strings pass the solver', () => {
     validPuzzleStrings.forEach((puzzle) => {
-      assert.doesNotThrow(() => solver.solve(puzzle));
+      try {
+        solver.solve(puzzle);
+        assert.fail('Did not throw error');
+      } catch (err) {
+        assert.isObject(err);
+        assert.property(err, 'message');
+      }
+
+      assert.isOk('Passed');
     });
   });
 
   test('Invalid puzzle strings fail the solver', () => {
     invalidPuzzleStrings.forEach((puzzle) => {
-      assert.throws(() => solver.solve(puzzle));
+      try {
+        solver.solve(puzzle);
+        assert.fail();
+      } catch (err) {
+        assert.strictEqual(typeof(err), 'object');
+        assert.property(err, 'message')
+      }
+
+      assert.isOk('Passed');
     });
   });
 
